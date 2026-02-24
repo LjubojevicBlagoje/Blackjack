@@ -12,8 +12,8 @@ class Player{
     public:
     Player();
 
-    void Hit(Shoe& shoe);
-    int PlayerSum();
+    virtual void Hit(Shoe& shoe);
+    int Sum();
 };
 
 #endif

@@ -9,7 +9,7 @@ void Player::Hit(Shoe& shoe) {
   }
 }
 
-int Player::PlayerSum() {
+int Player::Sum() {
   for (auto& x : cards) {
     // Logic for Ace
     if (x.ReturnRank() == 1) {
@@ -38,4 +38,5 @@ int Player::PlayerSum() {
       sum += x.ReturnRank();
     }
   }
+  return sum;
 }
