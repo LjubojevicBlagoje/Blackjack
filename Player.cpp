@@ -1,16 +1,14 @@
 #include "Player.h"
 
-Player::Player():sum(0){};
+Player::Player(){};
 
 void Player::Hit(Shoe& shoe) {
-  if (sum != 21) {
     Card card = shoe.DealCard();
     cards.push_back(card);
   }
-}
 
 int Player::Sum() {
-    sum = 0;
+    int sum = 0;
     int aceCount = 0;
   for (auto& x : cards) {
     // Counting aces as 1 first (can later upgrade to 11)

@@ -5,9 +5,8 @@
 #include"Card.h"
 
 class Player{
-    private:
+    protected:
     std::vector<Card> cards;
-    int sum;
 
     public:
     Player();

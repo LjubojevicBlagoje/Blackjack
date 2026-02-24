@@ -1,7 +1,7 @@
 #include "Dealer.h"
 
 void Dealer::Hit(Shoe& shoe) {
-  if (sum < 17) {
+  while (Sum() < 17) { // Hit untill 17
     Card card = shoe.DealCard();
     cards.push_back(card);
   }

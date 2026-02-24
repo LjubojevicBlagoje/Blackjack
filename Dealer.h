@@ -3,11 +3,7 @@
 
 #include "Player.h"
 
-class Dealer : private Player {
- public:
-  int sum;
-  std::vector<Card> cards;
-
+class Dealer : public Player {
  public:
   void Hit(Shoe& shoe) override;
 };
