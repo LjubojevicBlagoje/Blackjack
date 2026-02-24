@@ -1,6 +1,6 @@
 #include "Player.h"
 
-Player::Player() : sum(0) {};
+Player::Player():sum(0){};
 
 void Player::Hit(Shoe& shoe) {
   if (sum != 21) {
@@ -10,25 +10,13 @@ void Player::Hit(Shoe& shoe) {
 }
 
 int Player::Sum() {
+    sum = 0;
+    int aceCount = 0;
   for (auto& x : cards) {
-    // Logic for Ace
+    // Counting aces as 1 first (can later upgrade to 11)
     if (x.ReturnRank() == 1) {
-      int delta1 = 100;
-      int delta11 = 100;
-
-      if (sum + 1 <= 21) {
-        delta1 = 21 - (sum + 1);
-      }
-
-      if (sum + 11 <= 21) {
-        delta11 = 21 - (sum + 1);
-      }
-
-      if (delta1 < delta11) {
-        sum += 1;
-      } else {
-        sum += 11;
-      }
+      sum+=1;
+      aceCount++;
     }
     // Logic for picture cards
     else if (x.ReturnRank() == 11 || x.ReturnRank() == 12 ||
@@ -38,5 +26,12 @@ int Player::Sum() {
       sum += x.ReturnRank();
     }
   }
+
+  // Ace upgrade to 11 logic
+  while (aceCount > 0 && sum + 10 <= 21) {
+    sum += 10;  // upgrade one ace from 1 to 11
+    aceCount--;
+  }
+
   return sum;
 }
