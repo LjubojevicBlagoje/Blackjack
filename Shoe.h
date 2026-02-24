@@ -1,19 +1,22 @@
 #ifndef SHOE_H
 #define SHOE_H
 
-#include<vector>
-#include<iostream>
+#include <algorithm>
+#include <iostream>
+#include <random>
+#include <vector>
 
 #include "Card.h"
 
-class Shoe{
-    private:
-    std::vector<Card> shoe;
+class Shoe {
+ public:
+  std::vector<Card> cards;
 
-    public:
-    void InitialiseShoe(int numberOfDecks);
+  void InitialiseShoe(int numberOfDecks);
+  void Shuffle();
+  Card DealCard();
 
-    void PrintShoe();
+  void PrintShoe();
 };
 
 #endif
