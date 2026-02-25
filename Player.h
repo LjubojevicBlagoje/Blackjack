@@ -11,8 +11,10 @@ class Player{
     public:
     Player();
 
+    void DealTwo(Shoe& shoe);
     virtual void Hit(Shoe& shoe);
     int Sum();
+    virtual void PrintCards();
 };
 
 #endif

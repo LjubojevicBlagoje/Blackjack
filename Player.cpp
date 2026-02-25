@@ -2,6 +2,10 @@
 
 Player::Player(){};
 
+void Player::DealTwo(Shoe& shoe){
+    cards.push_back(shoe.DealCard());
+}
+
 void Player::Hit(Shoe& shoe) {
     Card card = shoe.DealCard();
     cards.push_back(card);
@@ -32,4 +36,13 @@ int Player::Sum() {
   }
 
   return sum;
+}
+
+void Player::PrintCards(){
+    std::cout<<"Player's hand: ";
+    for(auto& x : cards){
+        // Print each card's rank
+        std::cout<<x.ReturnRank()<<" ";
+    }
+    std::cout<<""<<std::endl;
 }

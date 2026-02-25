@@ -17,11 +17,9 @@ void Shoe::Shuffle() {
 }
 
 Card Shoe::DealCard() {
-  if (!cards.empty()) {
     Card card = std::move(cards.back());
     cards.pop_back();
     return card;
-  }
 }
 
 void Shoe::PrintShoe() {

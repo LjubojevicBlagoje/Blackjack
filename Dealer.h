@@ -6,6 +6,7 @@
 class Dealer : public Player {
  public:
   void Hit(Shoe& shoe) override;
+  void PrintCards() override;
 };
 
 #endif

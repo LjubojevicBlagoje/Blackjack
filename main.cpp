@@ -1,11 +1,13 @@
 #include"Card.h"
 #include"Shoe.h"
+#include"Player.h"
+#include"Dealer.h"
+#include"Controller.h"
 
 int main(){
-    Shoe shoe;
-    shoe.InitialiseShoe(2);
-    shoe.Shuffle();
-    shoe.PrintShoe();
+    Controller game;
+
+    game.Run();
 
     return 0;
 }
