@@ -18,10 +18,11 @@ class Controller{
     void PlayerTurn();
     void DealerTurn();
     void ResolveRound();
-    void AskPlayAgain();
+    bool AskPlayAgain();
 
     public:
     void Run();
+    bool playerBustedFirst;
 
 
 };

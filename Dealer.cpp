@@ -4,13 +4,14 @@ void Dealer::Hit(Shoe& shoe) {
   while (Sum() < 17) {  // Hit untill 17 (dealer stands on soft 17)
     Card card = shoe.DealCard();
     cards.push_back(card);
+    firstDealOver = true;
   }
 }
 
 void Dealer::PrintCards() {
   std::cout << "Dealer's cards: ";
   // Before player decdes to hit or stand, the 2nd card shall remain hidden
-  if (cards.size() == 2) {
+  if (cards.size() == 2 && firstDealOver == false) {
     // Print first card
     int x = cards[0].ReturnRank();
     if (x > 1 && x < 11) {

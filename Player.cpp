@@ -3,6 +3,7 @@
 Player::Player() {};
 
 void Player::DealTwo(Shoe& shoe) {
+    cards.clear(); // Reset cards to an empty vector
   cards.push_back(shoe.DealCard());
   cards.push_back(shoe.DealCard());
 }

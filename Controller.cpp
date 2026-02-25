@@ -4,9 +4,11 @@ void Controller::InitShoe(){
     // Shoe reshuffles every hand (standard to prevent card counting)
     shoe.ClearShoe();
     shoe.InitialiseShoe(8); // Initialise 8 deck shoe (standard in casinos)
+    shoe.Shuffle();
 }
 
 void Controller::Deal(){
+    std::cout<<"------------------------------\n";
     // Initialise shoe
     InitShoe();
     // Deal two 
@@ -15,16 +17,84 @@ void Controller::Deal(){
 
     dealer.DealTwo(shoe);
     dealer.PrintCards();
+
+    std::cout<<"------------------------------\n";
 }
+
+void Controller::PlayerTurn(){
+    std::string entry;
+    std::cout<<"\nWould you like to hit? (y/n) ";
+    std::cin>>entry;
+    std::cout<<""<<std::endl;
+
+    if(entry == "y"){
+        player.Hit(shoe);
+        player.PrintCards();
+        if(player.Sum() > 21){
+            playerBustedFirst = true;
+        } else if (player.Sum() < 21) {
+            PlayerTurn();
+        }
+    } else if (entry != "y" && entry != "n"){
+        std::cout<<"INVALID INPUT, TRY AGAIN\n";
+        PlayerTurn();
+    }
+    std::cout<<"------------------------------\n";
+}
+
+    void Controller::DealerTurn(){
+        std::cout<<"Dealer's turn...\n";
+        std::cout<<"------------------------------\n";
+        dealer.Hit(shoe);
+        player.PrintCards();
+        dealer.PrintCards();
+    }
+
+    void Controller::ResolveRound(){
+        int playerSum = player.Sum();
+        int dealerSum = dealer.Sum();
+        std::cout<<"------------------------------\n";
+        std::cout<<"Player has: "<<playerSum<<std::endl;
+        std::cout<<"Dealer has: "<<dealerSum<<std::endl;
+
+        if((playerSum > dealerSum && playerSum <= 21) || (playerSum <= 21 && dealerSum > 21)){
+            std::cout<<"Player Wins!"<<std::endl;
+        } else if ((dealerSum > playerSum && playerSum < 21) || (dealerSum <= 21 && playerSum > 21)){
+            std::cout<<"Dealer Wins!"<<std::endl;
+        } else if (dealerSum == playerSum){
+            std::cout<<"Tie!"<<std::endl;
+        }
+    }
 
 void Controller::PlayRound(){
-
+    InitShoe();
+    Deal();
+    PlayerTurn();
+    DealerTurn();
+    ResolveRound();
 }
-    void PlayerTurn();
-    void DealerTurn();
-    void ResolveRound();
-    bool AskPlayAgain();
+
+    bool Controller::AskPlayAgain(){
+        std::string input;
+        std::cout<<"\nWould you like to play again? (y/n) ";
+        std::cin>>input;
+
+        if(input == "y"){
+            return true;
+        } else if(input == "n"){
+            return false;
+        } else {
+            std::cout<<"INVALID INPUT, TRY AGAIN\n";
+            return AskPlayAgain();
+        }
+    }
 
     void Controller::Run(){
-        Deal();
+        PlayRound();
+        bool KeepPlaying = AskPlayAgain();
+        if(KeepPlaying == true){
+            Run();
+        } else {
+            std::cout<<"Thanks for playing!"<<std::endl;
+        }
     }

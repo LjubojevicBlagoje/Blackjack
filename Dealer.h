@@ -5,6 +5,7 @@
 
 class Dealer : public Player {
  public:
+    bool firstDealOver = false;
   void Hit(Shoe& shoe) override;
   void PrintCards() override;
 };
