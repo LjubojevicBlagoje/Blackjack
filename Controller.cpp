@@ -8,6 +8,7 @@ void Controller::InitShoe() {
 }
 
 void Controller::Deal() {
+    dealer.refreshFaceDownLogic();
   std::cout << "------------------------------\n";
   // Initialise shoe
   InitShoe();

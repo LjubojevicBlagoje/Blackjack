@@ -59,10 +59,3 @@ void Player::PrintCards() {
   }
   std::cout << "" << std::endl;
 }
-
-void Player::refreshFaceDownLogic() {
-  // The purpose of this function is to reset firstDealover every new round so
-  // that on every hand, before the player finishes his move the dealer's second
-  // card is "face down"
-  firstDealOver = false;
-}
