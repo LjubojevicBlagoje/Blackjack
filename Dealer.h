@@ -5,10 +5,9 @@
 
 class Dealer : public Player {
  public:
- bool hideHoleCard = true;
+  bool hideHoleCard = true;
   void Hit(Shoe& shoe) override;
   void PrintCards() override;
-  
 };
 
 #endif

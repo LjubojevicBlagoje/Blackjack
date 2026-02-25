@@ -2,6 +2,12 @@
 
 Player::Player() {};
 
+void Player::SetBankroll(int value) { bankroll = value; }
+
+void Player::UpdateBankroll(int amount) { bankroll += amount; }
+
+int Player::ReturnBankroll() { return bankroll; }
+
 void Player::DealTwo(Shoe& shoe) {
   cards.clear();  // Reset cards to an empty vector
   cards.push_back(shoe.DealCard());

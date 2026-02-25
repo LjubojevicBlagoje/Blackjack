@@ -1,13 +1,13 @@
-#include"Card.h"
-#include"Shoe.h"
-#include"Player.h"
-#include"Dealer.h"
-#include"Controller.h"
+#include "Card.h"
+#include "Controller.h"
+#include "Dealer.h"
+#include "Player.h"
+#include "Shoe.h"
 
-int main(){
-    Controller game;
+int main() {
+  Controller game;
+  game.InitBankroll();
+  game.Run();
 
-    game.Run();
-
-    return 0;
+  return 0;
 }

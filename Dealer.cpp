@@ -45,4 +45,3 @@ void Dealer::PrintCards() {
     std::cout << "" << std::endl;
   }
 }
-

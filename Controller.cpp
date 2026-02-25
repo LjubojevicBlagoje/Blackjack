@@ -1,10 +1,50 @@
 #include "Controller.h"
 
+void Controller::InitBankroll() {
+  int temp;
+  std::cout << "------------------------------\n";
+  std::cout << "Enter bankroll size: ";
+  std::cin >> temp;
+  player.SetBankroll(temp);
+  std::cout << "------------------------------\n";
+}
+
 void Controller::InitShoe() {
-  // Shoe reshuffles every hand (standard to prevent card counting)
+  // Shoe reshuffles every hand (standard for card counting prevention)
   shoe.ClearShoe();
   shoe.InitialiseShoe(8);  // Initialise 8 deck shoe (standard in casinos)
   shoe.Shuffle();
+}
+
+void Controller::PrintBankroll() {
+  std::cout << "Bankroll: " << player.ReturnBankroll() << std::endl;
+  std::cout << "------------------------------\n";
+}
+
+int Controller::PlaceBet() {
+  int betSize;
+
+  std::cout << "Enter bet size (multiples of $5): ";
+  std::cin >> betSize;
+
+  if (betSize < 5 || betSize % 5 != 0) {
+    std::cout << "Invalid bet size, please enter a valid amount!\n"
+              << std::endl;
+    PlaceBet();
+  } else {
+    // Check if player posesses enough bankroll to place bet
+    if (player.ReturnBankroll() - betSize < 0) {
+      std::cout << "Invalid bet size, please enter a valid amount!\n"
+                << std::endl;
+      PlaceBet();
+    }
+    return betSize;
+  }
+  return 0;
+}
+
+void Controller::EvaluateBet(int bet, int multiplier) {
+  player.UpdateBankroll(bet * multiplier);
 }
 
 void Controller::Deal() {
@@ -14,7 +54,6 @@ void Controller::Deal() {
   // Deal two
   player.DealTwo(shoe);
   player.PrintCards();
-  
 
   dealer.DealTwo(shoe);
   dealer.PrintCards();
@@ -44,7 +83,6 @@ void Controller::PlayerTurn() {
     std::cout << "INVALID INPUT, TRY AGAIN\n";
     PlayerTurn();
   }
-  std::cout << "------------------------------\n";
 }
 
 void Controller::DealerTurn() {
@@ -55,7 +93,7 @@ void Controller::DealerTurn() {
   dealer.PrintCards();
 }
 
-void Controller::ResolveRound() {
+void Controller::ResolveRound(int& multiplier) {
   int playerSum = player.Sum();
   int dealerSum = dealer.Sum();
   std::cout << "------------------------------\n";
@@ -65,31 +103,41 @@ void Controller::ResolveRound() {
   // If both player and dealer bust, favour dealer
   if (dealerSum > 21 && playerSum > 21) {
     std::cout << "\nDealer Wins!" << std::endl;
+    multiplier = -1;
   }
   // If player sum > dealer sum, and player hasn't busted, or if dealer busted
   // and player hasn't -> Player wins
   else if ((playerSum > dealerSum && playerSum <= 21) ||
            (playerSum <= 21 && dealerSum > 21 && playerBustedFirst == false)) {
     std::cout << "\nPlayer Wins!" << std::endl;
+    multiplier = 2;
   }
   // If dealer sum > player sum, and dealer hasn't busted, or if player busted
   // and dealer hasn't -> Player wins
   else if ((dealerSum > playerSum && dealerSum <= 21) ||
            (dealerSum <= 21 && playerSum > 21)) {
     std::cout << "\nDealer Wins!" << std::endl;
+    multiplier = -1;
   }
   // If dealer sum equals player sum it's a tie
   else if (dealerSum == playerSum) {
     std::cout << "\nTie!" << std::endl;
+    multiplier = 0;
   }
 }
 
 void Controller::PlayRound() {
+  int bet;
+  int multiplier;
   InitShoe();
+  PrintBankroll();
+  bet = PlaceBet();
   Deal();
   PlayerTurn();
   DealerTurn();
-  ResolveRound();
+  ResolveRound(multiplier);
+  EvaluateBet(bet, multiplier);
+  PrintBankroll();
 }
 
 bool Controller::AskPlayAgain() {
@@ -109,9 +157,14 @@ bool Controller::AskPlayAgain() {
 
 void Controller::Run() {
   PlayRound();
+  // Reset flag so that in the next round dealer hole card is hidden
   dealer.hideHoleCard = true;
   bool KeepPlaying = AskPlayAgain();
   if (KeepPlaying == true) {
+    std::cout << "" << std::endl;
+    std::cout << "==============================\n";
+    std::cout << "        NEW HAND        \n";
+    std::cout << "==============================\n" << std::endl;
     Run();
   } else {
     std::cout << "\nThanks for playing!\n" << std::endl;

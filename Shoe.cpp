@@ -1,7 +1,7 @@
 #include "Shoe.h"
 
-void Shoe::ClearShoe(){
-    cards.clear(); // Wipe all card objects from cards
+void Shoe::ClearShoe() {
+  cards.clear();  // Wipe all card objects from cards
 }
 
 void Shoe::InitialiseShoe(int numberOfDecks) {
@@ -21,9 +21,9 @@ void Shoe::Shuffle() {
 }
 
 Card Shoe::DealCard() {
-    Card card = std::move(cards.back());
-    cards.pop_back();
-    return card;
+  Card card = std::move(cards.back());
+  cards.pop_back();
+  return card;
 }
 
 void Shoe::PrintShoe() {
