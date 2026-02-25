@@ -12,6 +12,7 @@ class Controller{
     Player player;
     Dealer dealer;
 
+    void InitShoe();
     void Deal();
     void PlayRound();
     void PlayerTurn();

@@ -1,5 +1,9 @@
 #include "Shoe.h"
 
+void Shoe::ClearShoe(){
+    cards.clear(); // Wipe all card objects from cards
+}
+
 void Shoe::InitialiseShoe(int numberOfDecks) {
   // NumberOfDecks times 4 as there are 4 suits of each card
   for (int i = 0; i < numberOfDecks * 4; i++) {

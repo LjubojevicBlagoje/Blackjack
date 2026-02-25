@@ -12,6 +12,7 @@ class Shoe {
  public:
   std::vector<Card> cards;
 
+  void ClearShoe();
   void InitialiseShoe(int numberOfDecks);
   void Shuffle();
   Card DealCard();
