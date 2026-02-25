@@ -16,10 +16,12 @@ void Shoe::Shuffle() {
   std::shuffle(cards.begin(), cards.end(), rng);
 }
 
-Card Shoe::DealCard(){
+Card Shoe::DealCard() {
+  if (!cards.empty()) {
     Card card = std::move(cards.back());
     cards.pop_back();
     return card;
+  }
 }
 
 void Shoe::PrintShoe() {
