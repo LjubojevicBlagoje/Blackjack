@@ -8,7 +8,6 @@ void Controller::InitShoe() {
 }
 
 void Controller::Deal() {
-    dealer.refreshFaceDownLogic();
   std::cout << "------------------------------\n";
   // Initialise shoe
   InitShoe();
@@ -19,6 +18,7 @@ void Controller::Deal() {
 
   dealer.DealTwo(shoe);
   dealer.PrintCards();
+  dealer.hideHoleCard = false;
 
   std::cout << "------------------------------\n";
 }
@@ -64,23 +64,23 @@ void Controller::ResolveRound() {
 
   // If both player and dealer bust, favour dealer
   if (dealerSum > 21 && playerSum > 21) {
-    std::cout << "Dealer Wins!" << std::endl;
+    std::cout << "\nDealer Wins!" << std::endl;
   }
   // If player sum > dealer sum, and player hasn't busted, or if dealer busted
   // and player hasn't -> Player wins
   else if ((playerSum > dealerSum && playerSum <= 21) ||
            (playerSum <= 21 && dealerSum > 21 && playerBustedFirst == false)) {
-    std::cout << "Player Wins!" << std::endl;
+    std::cout << "\nPlayer Wins!" << std::endl;
   }
   // If dealer sum > player sum, and dealer hasn't busted, or if player busted
   // and dealer hasn't -> Player wins
   else if ((dealerSum > playerSum && dealerSum <= 21) ||
            (dealerSum <= 21 && playerSum > 21)) {
-    std::cout << "Dealer Wins!" << std::endl;
+    std::cout << "\nDealer Wins!" << std::endl;
   }
   // If dealer sum equals player sum it's a tie
   else if (dealerSum == playerSum) {
-    std::cout << "Tie!" << std::endl;
+    std::cout << "\nTie!" << std::endl;
   }
 }
 
@@ -109,10 +109,11 @@ bool Controller::AskPlayAgain() {
 
 void Controller::Run() {
   PlayRound();
+  dealer.hideHoleCard = true;
   bool KeepPlaying = AskPlayAgain();
   if (KeepPlaying == true) {
     Run();
   } else {
-    std::cout << "\nThanks for playing!" << std::endl;
+    std::cout << "\nThanks for playing!\n" << std::endl;
   }
 }

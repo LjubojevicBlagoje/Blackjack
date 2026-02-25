@@ -7,7 +7,6 @@
 class Player {
  protected:
   std::vector<Card> cards;
-  bool firstDealOver = false;
 
  public:
   Player();

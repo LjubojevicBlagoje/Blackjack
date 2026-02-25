@@ -10,7 +10,7 @@ void Dealer::Hit(Shoe& shoe) {
 void Dealer::PrintCards() {
   std::cout << "Dealer's cards: ";
   // Before player decdes to hit or stand, the 2nd card shall remain hidden
-  if (cards.size() == 2 && firstDealOver == false) {
+  if (cards.size() == 2 && hideHoleCard == true) {
     // Print first card
     int x = cards[0].ReturnRank();
     if (x > 1 && x < 11) {
@@ -46,9 +46,3 @@ void Dealer::PrintCards() {
   }
 }
 
-void Dealer::refreshFaceDownLogic() {
-  // The purpose of this function is to reset firstDealover every new round so
-  // that on every hand, before the player finishes his move the dealer's second
-  // card is "face down"
-  firstDealOver = false;
-}
