@@ -3,9 +3,10 @@
 Player::Player() {};
 
 void Player::DealTwo(Shoe& shoe) {
-    cards.clear(); // Reset cards to an empty vector
+  cards.clear();  // Reset cards to an empty vector
   cards.push_back(shoe.DealCard());
   cards.push_back(shoe.DealCard());
+  firstDealOver = true;
 }
 
 void Player::Hit(Shoe& shoe) {
@@ -57,4 +58,11 @@ void Player::PrintCards() {
     }
   }
   std::cout << "" << std::endl;
+}
+
+void Player::refreshFaceDownLogic() {
+  // The purpose of this function is to reset firstDealover every new round so
+  // that on every hand, before the player finishes his move the dealer's second
+  // card is "face down"
+  firstDealOver = false;
 }
