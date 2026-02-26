@@ -26,6 +26,7 @@ class Controller {
   void InitBankroll();
   void Run();
   bool playerBustedFirst;
+  bool doubleDown;
 };
 
 #endif

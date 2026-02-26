@@ -44,6 +44,11 @@ int Controller::PlaceBet() {
 }
 
 void Controller::EvaluateBet(int bet, int multiplier) {
+  // Double down logic
+  if (doubleDown == true) {
+    bet = 2 * bet;
+  }
+
   player.UpdateBankroll(bet * multiplier);
 }
 
@@ -64,12 +69,12 @@ void Controller::Deal() {
 
 void Controller::PlayerTurn() {
   std::string entry;
-  std::cout << "\nWould you like to hit? (y/n) ";
+  std::cout << "\nHit(h) | Stand(s) | Double down(d) ";
   std::cin >> entry;
   std::cout << "" << std::endl;
 
-  // If user entered y, hit, and if entered n skip the turn (stand)
-  if (entry == "y") {
+  // If user entered h, hit, and if entered s skip the turn (stand)
+  if (entry == "h") {
     player.Hit(shoe);
     player.PrintCards();
     if (player.Sum() > 21) {
@@ -78,8 +83,19 @@ void Controller::PlayerTurn() {
     } else if (player.Sum() < 21) {
       PlayerTurn();
     }
-    // If user enters neither y nor n request input untill satisfactory
-  } else if (entry != "y" && entry != "n") {
+    // Double down
+  } else if (entry == "d") {
+    doubleDown = true;
+    // After doubling down player recieves exactly 1 more card and turn ends
+    player.Hit(shoe);
+    player.PrintCards();
+    if (player.Sum() > 21) {
+      // if player busts
+      playerBustedFirst = true;
+    }
+  }
+  // If user enters neither h, s nor d request input untill satisfactory
+  else if (entry != "h" && entry != "s" && entry != "d") {
     std::cout << "INVALID INPUT, TRY AGAIN\n";
     PlayerTurn();
   }
@@ -159,6 +175,8 @@ void Controller::Run() {
   PlayRound();
   // Reset flag so that in the next round dealer hole card is hidden
   dealer.hideHoleCard = true;
+  // Reset double down flag for next round
+  doubleDown = false;
   bool KeepPlaying = AskPlayAgain();
   if (KeepPlaying == true) {
     std::cout << "" << std::endl;
