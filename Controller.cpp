@@ -110,7 +110,7 @@ void Controller::ResolveRound(int& multiplier) {
   else if ((playerSum > dealerSum && playerSum <= 21) ||
            (playerSum <= 21 && dealerSum > 21 && playerBustedFirst == false)) {
     std::cout << "\nPlayer Wins!" << std::endl;
-    multiplier = 2;
+    multiplier = 1;
   }
   // If dealer sum > player sum, and dealer hasn't busted, or if player busted
   // and dealer hasn't -> Player wins
