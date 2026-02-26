@@ -25,8 +25,8 @@ class Controller {
  public:
   void InitBankroll();
   void Run();
-  bool playerBustedFirst;
-  bool doubleDown;
+  bool playerBustedFirst = false;
+  bool doubleDown = false;
 };
 
 #endif

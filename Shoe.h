@@ -9,8 +9,10 @@
 #include "Card.h"
 
 class Shoe {
- public:
+ private:
   std::vector<Card> cards;
+
+  public:
 
   void ClearShoe();
   void InitialiseShoe(int numberOfDecks);

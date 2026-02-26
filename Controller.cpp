@@ -30,13 +30,13 @@ int Controller::PlaceBet() {
   if (betSize < 5 || betSize % 5 != 0) {
     std::cout << "Invalid bet size, please enter a valid amount!\n"
               << std::endl;
-    PlaceBet();
+    return PlaceBet();
   } else {
     // Check if player posesses enough bankroll to place bet
     if (player.ReturnBankroll() - betSize < 0) {
       std::cout << "Invalid bet size, please enter a valid amount!\n"
                 << std::endl;
-      PlaceBet();
+      return PlaceBet();
     }
     return betSize;
   }
@@ -177,6 +177,9 @@ void Controller::Run() {
   dealer.hideHoleCard = true;
   // Reset double down flag for next round
   doubleDown = false;
+  // Reset player bust flag for next round
+  playerBustedFirst = false;
+  
   bool KeepPlaying = AskPlayAgain();
   if (KeepPlaying == true) {
     std::cout << "" << std::endl;
