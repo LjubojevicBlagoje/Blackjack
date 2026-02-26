@@ -38,12 +38,13 @@ int Controller::PlaceBet() {
                 << std::endl;
       return PlaceBet();
     }
+    playerBet = betSize;
     return betSize;
   }
   return 0;
 }
 
-void Controller::EvaluateBet(int bet, int multiplier) {
+void Controller::EvaluateBet(int bet, double multiplier) {
   // Double down logic
   if (doubleDown == true) {
     bet = 2 * bet;
@@ -54,8 +55,6 @@ void Controller::EvaluateBet(int bet, int multiplier) {
 
 void Controller::Deal() {
   std::cout << "------------------------------\n";
-  // Initialise shoe
-  InitShoe();
   // Deal two
   player.DealTwo(shoe);
   player.PrintCards();
@@ -68,48 +67,103 @@ void Controller::Deal() {
 }
 
 void Controller::PlayerTurn() {
-  std::string entry;
-  std::cout << "\nHit(h) | Stand(s) | Double down(d) ";
-  std::cin >> entry;
-  std::cout << "" << std::endl;
+  // If player's hand is a natural blackjack skip turn (win condition achieved)
+  if (player.Sum() == 21) {
+    blackjack = true;
+    std::cout << "NATURAL (3:2 payout)\n";
+    std::cout << "------------------------------\n";
+  } else {
+    std::string entry;
+    std::cout << "\nHit(h) | Stand(s) | Double down(d) ";
+    std::cin >> entry;
+    std::cout << "" << std::endl;
 
-  // If user entered h, hit, and if entered s skip the turn (stand)
-  if (entry == "h") {
-    player.Hit(shoe);
-    player.PrintCards();
-    if (player.Sum() > 21) {
-      // if player busts
-      playerBustedFirst = true;
-    } else if (player.Sum() < 21) {
-      PlayerTurn();
+    // If user entered h, hit, and if entered s skip the turn (stand)
+    if (entry == "h") {
+      player.Hit(shoe);
+      player.PrintCards();
+      if (player.Sum() > 21) {
+        // if player busts
+        playerBustedFirst = true;
+      } else if (player.Sum() < 21) {
+        PlayerTurnNoDoubleDown();
+      }
+      // Double down
+    } else if (entry == "d") {
+      // Only allow double down if player can afford
+      if ((player.ReturnBankroll() - playerBet) >= playerBet) {
+        doubleDown = true;
+        // After doubling down player recieves exactly 1 more card and turn ends
+        player.Hit(shoe);
+        player.PrintCards();
+        if (player.Sum() > 21) {
+          // if player busts
+          playerBustedFirst = true;
+        }
+      } else {
+        std::cout << "You cannot afford to double down!\n";
+        PlayerTurnNoDoubleDown();
+      }
+
     }
-    // Double down
-  } else if (entry == "d") {
-    doubleDown = true;
-    // After doubling down player recieves exactly 1 more card and turn ends
-    player.Hit(shoe);
-    player.PrintCards();
-    if (player.Sum() > 21) {
-      // if player busts
-      playerBustedFirst = true;
+    // If user enters neither h, s nor d request input untill satisfactory
+    else if (entry != "h" && entry != "s" && entry != "d") {
+      std::cout << "INVALID INPUT, TRY AGAIN\n";
+      PlayerTurnNoDoubleDown();
     }
   }
-  // If user enters neither h, s nor d request input untill satisfactory
-  else if (entry != "h" && entry != "s" && entry != "d") {
-    std::cout << "INVALID INPUT, TRY AGAIN\n";
-    PlayerTurn();
+}
+
+void Controller::PlayerTurnNoDoubleDown() {
+  // Player turn function without the double down option (can double down only
+  // straight after deal)
+
+  // If player's hand is a blackjack skip turn (win condition achieved)
+  if (player.Sum() == 21) {
+    std::cout << "BLACKJACK\n";
+    std::cout << "------------------------------\n";
+  } else {
+    std::string entry;
+    std::cout << "\nHit(h) | Stand(s) ";
+    std::cin >> entry;
+    std::cout << "" << std::endl;
+
+    // If user entered h, hit, and if entered s skip the turn (stand)
+    if (entry == "h") {
+      player.Hit(shoe);
+      player.PrintCards();
+      if (player.Sum() > 21) {
+        // if player busts
+        playerBustedFirst = true;
+      } else if (player.Sum() < 21) {
+        PlayerTurnNoDoubleDown();
+      }
+    }
+    // If user enters neither h, s nor d request input untill satisfactory
+    else if (entry != "h" && entry != "s") {
+      std::cout << "INVALID INPUT, TRY AGAIN\n";
+      PlayerTurnNoDoubleDown();
+    }
   }
 }
 
 void Controller::DealerTurn() {
-  std::cout << "Dealer's turn...\n";
-  std::cout << "------------------------------\n";
-  dealer.Hit(shoe);
-  player.PrintCards();
-  dealer.PrintCards();
+  // If dealer has natural, skip dealer turn
+  if (dealer.Sum() == 21) {
+    std::cout << "------------------------------\n";
+    std::cout << "DEALER NATURAL\n";
+    dealerBlackjack = true;
+  } else {
+    std::cout << "Dealer's turn...\n";
+    std::cout << "------------------------------\n";
+    dealer.Hit(shoe);
+    dealer.hideHoleCard = false;  // Reveal hole card
+    player.PrintCards();
+    dealer.PrintCards();
+  }
 }
 
-void Controller::ResolveRound(int& multiplier) {
+void Controller::ResolveRound(double& multiplier) {
   int playerSum = player.Sum();
   int dealerSum = dealer.Sum();
   std::cout << "------------------------------\n";
@@ -119,32 +173,39 @@ void Controller::ResolveRound(int& multiplier) {
   // If both player and dealer bust, favour dealer
   if (dealerSum > 21 && playerSum > 21) {
     std::cout << "\nDealer Wins!" << std::endl;
-    multiplier = -1;
+    multiplier = -1.0;
+  }
+  // If both player and dealer have blackjack its a tie
+  else if (blackjack == true && dealerBlackjack == true) {
+    multiplier = 0.0;
+  }
+  // If player wins by blackjack pay out 3:2
+  else if (blackjack == true && dealerBlackjack == false) {
+    multiplier = 1.5;
   }
   // If player sum > dealer sum, and player hasn't busted, or if dealer busted
   // and player hasn't -> Player wins
   else if ((playerSum > dealerSum && playerSum <= 21) ||
            (playerSum <= 21 && dealerSum > 21 && playerBustedFirst == false)) {
     std::cout << "\nPlayer Wins!" << std::endl;
-    multiplier = 1;
+    multiplier = 1.0;
   }
   // If dealer sum > player sum, and dealer hasn't busted, or if player busted
-  // and dealer hasn't -> Player wins
-  else if ((dealerSum > playerSum && dealerSum <= 21) ||
-           (dealerSum <= 21 && playerSum > 21)) {
+  // -> Dealer wins
+  else if ((dealerSum > playerSum && dealerSum <= 21) || (playerSum > 21)) {
     std::cout << "\nDealer Wins!" << std::endl;
-    multiplier = -1;
+    multiplier = -1.0;
   }
   // If dealer sum equals player sum it's a tie
   else if (dealerSum == playerSum) {
     std::cout << "\nTie!" << std::endl;
-    multiplier = 0;
+    multiplier = 0.0;
   }
 }
 
 void Controller::PlayRound() {
   int bet;
-  int multiplier;
+  double multiplier;
   InitShoe();
   PrintBankroll();
   bet = PlaceBet();
@@ -172,22 +233,34 @@ bool Controller::AskPlayAgain() {
 }
 
 void Controller::Run() {
-  PlayRound();
-  // Reset flag so that in the next round dealer hole card is hidden
-  dealer.hideHoleCard = true;
-  // Reset double down flag for next round
-  doubleDown = false;
-  // Reset player bust flag for next round
-  playerBustedFirst = false;
-  
-  bool KeepPlaying = AskPlayAgain();
-  if (KeepPlaying == true) {
-    std::cout << "" << std::endl;
-    std::cout << "==============================\n";
-    std::cout << "        NEW HAND        \n";
-    std::cout << "==============================\n" << std::endl;
-    Run();
-  } else {
-    std::cout << "\nThanks for playing!\n" << std::endl;
+  bool KeepPlaying = true;
+
+  while (KeepPlaying == true) {
+    PlayRound();
+    // Reset flag so that in the next round dealer hole card is hidden
+    dealer.hideHoleCard = true;
+    // Reset double down flag for next round
+    doubleDown = false;
+    // Reset player bust flag for next round
+    playerBustedFirst = false;
+    // Reset blackjack flag for next round
+    blackjack = false;
+    // Reset dealer blackjack flag for next round
+    dealerBlackjack = false;
+
+    // If player runs of of money -> quit
+    if (player.ReturnBankroll() < 5) {
+      KeepPlaying = false;
+    }
+
+    if (KeepPlaying == true) AskPlayAgain();
+    if (KeepPlaying == true) {
+      std::cout << "" << std::endl;
+      std::cout << "==============================\n";
+      std::cout << "        NEW HAND        \n";
+      std::cout << "==============================\n" << std::endl;
+    } else {
+      std::cout << "\nThanks for playing!\n" << std::endl;
+    }
   }
 }

@@ -14,12 +14,13 @@ class Controller {
   void InitShoe();
   void PrintBankroll();
   int PlaceBet();
-  void EvaluateBet(int bet, int multiplier);
+  void EvaluateBet(int bet, double multiplier);
   void Deal();
   void PlayRound();
   void PlayerTurn();
+  void PlayerTurnNoDoubleDown();
   void DealerTurn();
-  void ResolveRound(int&);
+  void ResolveRound(double&);
   bool AskPlayAgain();
 
  public:
@@ -27,6 +28,9 @@ class Controller {
   void Run();
   bool playerBustedFirst = false;
   bool doubleDown = false;
+  bool blackjack = false;
+  bool dealerBlackjack = false;
+  int playerBet;
 };
 
 #endif
